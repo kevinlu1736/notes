@@ -22,6 +22,9 @@
     <li><a href="#mutable_funcs_and_none_local">Multable Functions & None Local</a></li>
     <li><a href="#iterators">Iterators</a></li>
     <li><a href="#growth">Measuring Growth</a></li>
+    <li><a href="#objects">Object Oriented Programming</a></li>
+    <li><a href="#linked_lists">Linked List, Tree and Property Methods</a></li>
+    <li><a href="#magic_methods">Magic Methods</a></li>
     <li><a href="#miscellaneous">miscellaneous</a></li>
 </ul>
 
@@ -981,6 +984,7 @@ sorted(iterable)    #Create a sorted list containing x in iterable
 ```
 
 #### Generators
+
 ```python
 >>> def plus_minus(x):
 ...     yield x
@@ -1050,9 +1054,12 @@ def substrings(s):
 >>> list(substrings('tops')
 ['t', 'to', 'top', 'tops', 'o', 'op', 'ops', 'p', 'ps', 's']
 ```
+
 <a href="#top">return to the top</a>
 
 <a name="growth"> </a>
+
+
 ```python
 total = 0
 def count(f):
@@ -1074,6 +1081,236 @@ xxxxx
 10
 ```
 
+<a href="#top">return to the top</a>
+
+<a name="objects"></a>
+
+## Object Oriented
+- Method calls are messages passed between objects
+- A class statement creates a new class and binds that class to <name> in the first frame of the current environment
+
+
+
+```python
+#find in instance, then class
+>>> getattr(tom_account, 'balance')
+10
+
+>>> hasattr(tom_account, 'deposit')
+True
+
+>>> type(Account.deposit)
+<class 'function'>
+>>> type(tom_account.deposit)
+<class 'method'>
+
+>>> Account.deposit(tom_account, 1001)
+1001
+
+```
+
+### Attributes
+- All objects have attributes, which are name-value pairs
+- Methods are also attributes of the class
+
+```python
+class Account:
+    interest = 0.02
+    def __init__(self, holder):
+        self.holder = holder
+        self.balance = 0
+
+#If the attribute of the instance doesn't exist, it will create one
+>>> tom_account.interest = 0.08
+>>> tom_account.interest
+0.08
+
+#use parent class method
+Account.withdraw(self, ~)
+
+self.withdraw_fee #This will evaluated to the class attribute if there's no one for the instance
+
+
+class Dog:
+    def bark(self):
+        print('woof!')
+
+>>> lacey = Dog()
+>>> lacey.bark = Dog.bark
+
+>>> lacey.bark()
+Error  #need an arguement self
+```
+
+### Composition
+- One object hold another one as an attribute
+
+```python
+class B:
+    n = 4
+    def __init__(self, y):
+        self.z = self.f(y)
+
+class C(B):
+    def f(self, x):
+        return x
+
+#Even if it calls the parent's method, the self is still represent itself
+>>> C(2).z
+2
+```
+<a href="#top">return to the top</a>
+
+<a name="linked_lists"></a>
+## Linked Lists
+```python
+isinstance(rest, Link) #to see whether rest is a Link
+```
+
+## Property Methods
+- They are called implicitly
+
+```python
+class Link:
+    @property
+    def second(self):
+        return self.rest.first
+
+    @second.setter
+    def second(self, value):
+        self.rest.first = value
+
+#[3, 4, 5]
+>>> s.second
+4
+>>> s.second = 5
+>>> s.second
+5
+```
+<a href="#top">return to the top</a>
+
+<a name="magic_methods"></a>
+## Magic Methods
+```python
+class A:
+
+    def __str__(self):
+        return 'A object'
+
+
+>>> print(A())
+A object
+
+
+class A:
+    def __repr__(self):
+        return 'A object'
+
+>>> a = A()
+#str default use repr
+>>> print(a)
+A object
+>>> a
+A object
+```
+
+```python
+#Full linked list
+class Link:
+    empty = ()
+    def __init__(self, first, rest=empty):
+        assert type(rest) is Link or \ 
+        rest is Link.empty, \
+        'rest must be a linked list or empty'
+        self.first = first
+        self.reset = rest
+
+    def __repr__(self):
+        if self.reset is Link.empty:
+            return 'Link(' + repr(self.first) + ')'
+        return 'Link(' + repr(self.first) + ', ' + repr(self.rest) + ')'
+
+    def __str__(self):
+        s = '<'
+        while self.rest is not Link.empty:
+            s += str(self.first) + ', '
+            self = self.rest
+        return s + str(self.first) + '>'
+
+    def __contains__(self, elem):
+        if self.first == elem:
+            return True
+        elif self.rest is Link.empty:
+            return False
+        return elem in self.rest
+
+    def __add__(self, other):
+        if self.rest is Link.empty:
+            if other.rest if Link.empty:
+                return link(self.first, Link(other.first))
+            else:
+                return Link(self.first, Link(other.first) + other.rest)
+        else:
+            return Link(self.first, self.rest + other)
+
+    #l*2
+    def __mul__(self. other):
+        temp = self
+        for _ in range(other - 1):
+            temp = temp + self
+        return temp
+
+    #2*l
+    def __rmul__(self, other):
+        return self * other
+
+    #len(l)
+    def __len__(self):
+        return 1 + len(self.rest)
+
+    #l[0], max(l), min(l)
+    def __getitem__(self, index):
+        if type(index) is int:
+            if index == 0:
+                return self.first
+            return self.rest[index - 1]
+        #for slicing [1:3]
+        elif type(index) is slice:
+            start = slice.start or 0 #None then 0
+            stop = slice.stop or len(self) #None then len(self)
+            steop = index.step or 1
+
+            if stop <= start:
+                return Link.empty
+            if start == 0:
+                return Link(self.first, self[start + step:stop:step])
+            return self.rest[start - 1:stop - 1:step]
+
+#start 1 stop 2 steps 3
+>>> slice(1, 2, 3)
+
+>>> max(l)
+3
+>>> min(l)
+1
+
+>>> l = Link(1, Link(2, Link(3)))
+>>> l
+Link(1, Link(2, Link(3)))
+
+>>> print(l)
+<1, 2, 3>
+
+>>> 3 in l
+True
+>>> 5 in l
+False
+
+>>> l2 = Link(1, Link(3))
+
+>>> l + l2
+Link(1, Link(2, Link(3, Link(1, Link(3)))))
+```
 
 
 
@@ -1139,6 +1376,85 @@ def parent(previous_val):
 > e. A subset of the body of the function contains logic that could be re-used in another program.
 >
 > b c
+
+#### Midterm Miscellaneous
+```python
+>>> 1==True
+True
+>>> 0==False
+True
+>>> 2==True
+False
+>>> 2==False
+False
+>>> list(a) is a
+False
+
+>>> def f():
+...     return 'test'
+>>> f()
+'test'
+
+>>> sum([1, 2, 3], 5)
+11
+>>> sum([1, 2, 3], [3])
+Error
+>>> sum([[1, 2, 3]], [4])
+[1, 2, 3, 4]
+
+#==, != only return True False, but and, or returns last possible value evaluated
+>>> True==1
+True
+>>> True and 1
+1
+```
+
+##### List
+append(obj)->None
+count(val)->int
+extend(iterable)->None
+
+index(val, start=0, stop=9~)->:
+- first index of val
+- Value Error if not exist
+
+insert(index, object)->None
+
+pop(index=-1)->:
+- iterm removed
+- Index Error if not found
+
+remove(val)->: (remove first occurance)
+- None
+- Error if not found
+
+reverse()->None
+
+sort(key=None, reverse=False)->None (default asc)
+
+##### Dictionary
+get(key, default=None)->
+items()iterable->iterable->tuples
+keys()->iterable inside
+pop(key, [d])->
+- val
+- d if not found
+- error if no d and not found
+update(dict)->None
+values()->iterable
+
+##### str
+index(sub, [start], [end])->:
+- int
+- Error if not found
+
+find(sub, [start], [end])->:
+- int
+- -1
+
+replace(old, new, count=-1)->copy of str (-1 means all)
+
+
 
 
 
