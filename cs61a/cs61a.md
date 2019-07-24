@@ -64,7 +64,7 @@ words = set(open('/usr/share/dict/words').read().split())   #open the default di
 
 ```
 
-<a href="#top">return to the top</a>
+<a href="#top">return to the top</a><br/>
 
 
 <a name="functions"></a>
@@ -106,13 +106,13 @@ def square(x):
 <a name="environment_diagrams"></a>
 #### Environment Diagrams
 
-<img src="images/1-environment-diagram.png" style="max-width:70%;"/>
+<img src="images/1-environment-diagram.png" style="max-width:70%;"/><br/>
 
 #### Execution rule for assignment statements:
 1. Evaluate all expressions to the right of = from left to right.
 2. Bind all names to the left of = to the resulting values in the current frame.
 
-<img src="images/2-environment-diagram-func.png" style="max-width:70%;"/>
+<img src="images/2-environment-diagram-func.png" style="max-width:70%;"/><br/>
 
 <a name="funcs"></a>
 #### Functions
@@ -121,9 +121,9 @@ def square(x):
 - Assignment
 - Function definition
 
-<img src="images/3-environment-diagram-func-def.png" style="max-width:70%;"/>
+<img src="images/3-environment-diagram-func-def.png" style="max-width:70%;"/><br/>
 
-<img src="images/4-environment-diagram-global-and-local.png" style="max-width:70%;"/>
+<img src="images/4-environment-diagram-global-and-local.png" style="max-width:70%;"/><br/>
 <a href="#top">return to the top</a>
 
 <a name="testing"></a>
@@ -147,22 +147,26 @@ If the expression is
 """
 ```
 
-Run Tests
+####Run Tests
 1. Run all the tests
+
 ```python
 >>> from doctest import testmod
 >>> testmod() //run all the tests
 ```
 2. run specific function test
+
 ```python
 >>> from doctest import run_docstring_examples
 >>> run_docstring_examples(sum_nat, globals(), True)    //sum_nat: function name, globals(): get global environment, True: show verbose
 ```
 
 3. Run all the tests in a file
+
 ```shell
 python3 -m doctest <python_source_file>
 ```
+<br/>
 <a href="#top">return to the top</a>
 
 <a name="control"></a>
@@ -189,8 +193,8 @@ None None
 ```
 
 ##### Compound Statements
-<img src="images/5-compound-statements.png" style="max-width:70%;"/>
-<img src="images/6-compound-statements-exp.png" style="max-width:70%;"/>
+<img src="images/5-compound-statements.png" style="max-width:70%;"/><br/>
+<img src="images/6-compound-statements-exp.png" style="max-width:70%;"/><br/>
 <a href="#top">return to the top</a>
 
 <a name="lambda"></a>
@@ -217,7 +221,7 @@ square(4)               //return 16
 <function square at 0x10293e730>
 ```
 
-<img src="images/8-lambda-def-diff.png" style="max-width:80%;"/>
+<img src="images/8-lambda-def-diff.png" style="max-width:80%;"/><br/>
 
 <a href="#top">return to the top</a>
 
@@ -229,6 +233,7 @@ square(4)               //return 16
 ```
 
 - inner call goes first because operands must be evaluated before calling a function
+
 ```python
 def yes(guess):
     if guess == 'yes':
@@ -261,7 +266,7 @@ fuck
 
 - There is no difference between single and double quotes in python
 
-**''(empty string), 0,  False, None means False**
+#####''(empty string), 0,  False, None means False**
 - always prefer to show the latest one
 - show nothing if None
 - show only what evaluated 
@@ -295,6 +300,7 @@ False
 ```
 
 - variables passed in as parameters can be changed directly
+
 ```python
 def say(s0):
     for i in range(10):
@@ -303,6 +309,7 @@ def say(s0):
 ```
 
 - print
+
 ```python
 >>> print(10, 20)
 10 20
@@ -317,7 +324,7 @@ def say(s0):
 - A function's range is the set of output values it might possibly return.
 - A function's behavior is the relationship it creates between input and output.
 
-<img src="images/7-higher-order-functions-exp.png" style="max-width:90%;"/>
+<img src="images/7-higher-order-functions-exp.png" style="max-width:90%;"/><br/>
 
 ```python
 #return a function
@@ -337,7 +344,7 @@ def make_adder(n):
 >>> make_adder(1)(3)
 >>> 4
 ```
-<img src="images/9-func-in-func-environment-diagram.png" style="max-width:80%;" />
+<img src="images/9-func-in-func-environment-diagram.png" style="max-width:80%;" /><br/>
 
 <a href="#top">return to the top</a>
 
@@ -438,6 +445,7 @@ def luhn_sum_double(n):
 ```
 
 - Be able to convert between iteration and recursion
+
 #### Cascade
 ```python
 def cascade(n):
@@ -460,6 +468,7 @@ def cascade(n):
 12345
 """
 ```
+
 ```python
 def invese_cascade(n):
     grow(n)
@@ -487,15 +496,15 @@ shrink = lambda n: f_then_g(print, shrink, n // 10)
 
 #### Count Partitions
 
-2 + 4 = 6 \
-1 + 1 + 4 = 6 \
-3 + 3 = 6 \
-1 + 2 + 3 = 6 \
-1 + 1 + 1 + 3 = 6 \
-2 + 2 + 2 = 6 \
-1 + 1 + 2 + 2 = 6 \
-1 + 1 + 1 + 1 + 2 = 6 \
-1 + 1 + 1 + 1 + 1 + 1 = 6 \
+2 + 4 = 6 <br/>
+1 + 1 + 4 = 6 <br/>
+3 + 3 = 6 <br/>
+1 + 2 + 3 = 6 <br/>
+1 + 1 + 1 + 3 = 6 <br/>
+2 + 2 + 2 = 6 <br/>
+1 + 1 + 2 + 2 = 6 <br/>
+1 + 1 + 1 + 1 + 2 = 6 <br/>
+1 + 1 + 1 + 1 + 1 + 1 = 6 <br/>
 
 ##### Divide and Conquer
 - include 4
@@ -578,7 +587,7 @@ def equal_rational(x, y):
 ```
 
 ##### Abstraction Barriers
-<img src="images/11-abstraction-barrier.png" style="max-width:80%"/>
+<img src="images/11-abstraction-barrier.png" style="max-width:80%"/><br/>
 
 <a href="#top">return to the top</a>
 
@@ -694,7 +703,7 @@ True
 ```
 **slicing creates new values**
 
-<img src="images/12-list-slicing.png" style="max-width:80%"/>
+<img src="images/12-list-slicing.png" style="max-width:80%"/><br/>
 
 #### Processing Container Values
 ```python
@@ -803,7 +812,8 @@ def print_tree(t, indent=0):
 - A type of object is a class; clases are first-class values in Python, can be passed as parameters
 - Everything in python is an object
 
-Mutation Operations
+####Mutation Operations
+
 ```python
 >>> suites = ['coin', 'string', 'myriad']
 >>> suits.pop()
@@ -915,7 +925,7 @@ def make_withdraw_list(balance):
     def ...
 ```
 
-<img src="images/15-environment-diagrams-with-list.png" style="max-width:90%"/>
+<img src="images/15-environment-diagrams-with-list.png" style="max-width:90%"/><br/>
 <a href="#top">return to the top</a>
 
 <a name="iterators"></a>
@@ -941,6 +951,7 @@ StopIteration Error   #end if go outside the list
 - keys, values, items of a dictionary are all iterables, the order of items is the order they were added(python 3.6+)
 - if the shape or structure of the dictionary is changed while being iterated, there will be an error.(It's ok to change the values) 
 - The modification of the list will affect the result of showing through an iterator
+
 ```python
 >>> i = iter(d.iterms())
 >>> next(i)
@@ -949,6 +960,7 @@ StopIteration Error   #end if go outside the list
 
 #### Iterator and For
 - Iterator will be moved by for
+
 ```python
 >>> r = range(3, 6)
 >>> it = iter(r)
@@ -964,10 +976,13 @@ StopIteration Error   #end if go outside the list
 ...
 #Nothing because it already reached the end of the iterable
 ```
+
 - Built-in functions for Iteration
+
 ```python
 #func here will apply lazily (when we ask for the ith value
 #they all return iterators
+
 map(func, iterable)     #Iterate over func(x) for x in iterable, return map object
 filter(func, iterable)  #Iterate over x in iterable if func(x)
 zip(first_iter, second_iter)    #Iterate over co-indexed (x, y) pairs
@@ -1052,12 +1067,15 @@ def substrings(s):
         yield from prefixes(s)
         yield from substrings(s[1:])
 >>> list(substrings('tops')
-['t', 'to', 'top', 'tops', 'o', 'op', 'ops', 'p', 'ps', 's']
+t', 'to', 'top', 'tops', 'o', 'op', 'ops', 'p', 'ps', 's']
+
 ```
 
 <a href="#top">return to the top</a>
 
 <a name="growth"> </a>
+
+##Growth
 
 
 ```python
@@ -1113,6 +1131,7 @@ True
 - All objects have attributes, which are name-value pairs
 - Methods are also attributes of the class
 
+
 ```python
 class Account:
     interest = 0.02
@@ -1128,7 +1147,8 @@ class Account:
 #use parent class method
 Account.withdraw(self, ~)
 
-self.withdraw_fee #This will evaluated to the class attribute if there's no one for the instance
+>>> self.withdraw_fee #This will evaluated to the class attribute if there's no one for the instance
+>>> self.withdraw_fee += 10 #This will also evaluated to the class attribute if there's no one for the instance
 
 
 class Dog:
@@ -1410,6 +1430,8 @@ True
 ```
 
 ##### List
+
+```python
 append(obj)->None
 count(val)->int
 extend(iterable)->None
@@ -1431,8 +1453,11 @@ remove(val)->: (remove first occurance)
 reverse()->None
 
 sort(key=None, reverse=False)->None (default asc)
+```
 
 ##### Dictionary
+
+```python
 get(key, default=None)->
 items()iterable->iterable->tuples
 keys()->iterable inside
@@ -1442,8 +1467,10 @@ pop(key, [d])->
 - error if no d and not found
 update(dict)->None
 values()->iterable
+```
 
 ##### str
+```python
 index(sub, [start], [end])->:
 - int
 - Error if not found
@@ -1453,6 +1480,8 @@ find(sub, [start], [end])->:
 - -1
 
 replace(old, new, count=-1)->copy of str (-1 means all)
+```
+
 
 
 
