@@ -1001,6 +1001,18 @@ sorted(iterable)    #Create a sorted list containing x in iterable
 #### Generators
 
 ```python
+#yield all the paths that reach the value x
+#yield will only 1 layer a time, it won't cause duplicated sub-paths
+def generate_paths(t, x):
+	if t.label == x:
+	    yield [t.label]
+	for b in t.branches:
+ 	   for path in generate_paths(b, x):
+ 	       if path:
+     	       yield [t.label] + path
+
+
+
 >>> def plus_minus(x):
 ...     yield x
 ...     yield -x
@@ -1160,6 +1172,10 @@ class Dog:
 
 >>> lacey.bark()
 Error  #need an arguement self
+
+#kind is a class name
+def get_object(kind):
+	return kind()
 ```
 
 ### Composition
@@ -1480,6 +1496,8 @@ find(sub, [start], [end])->:
 - -1
 
 replace(old, new, count=-1)->copy of str (-1 means all)
+
+'{0} is a good {1}'.format('ly', 'boy)
 ```
 
 

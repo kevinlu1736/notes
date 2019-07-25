@@ -41,3 +41,10 @@ class B(A):
 
     def __repr__(self):
         return 'x = y is ' + str(self.x + self.y)
+
+
+
+def y(n):
+    if n != 0:
+        yield 'fuck{0}'.format(n)
+    y(n-1)
