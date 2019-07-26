@@ -1500,7 +1500,10 @@ replace(old, new, count=-1)->copy of str (-1 means all)
 '{0} is a good {1}'.format('ly', 'boy)
 ```
 
-
+#### Week5 Miscellaneous
+```python
+float('inf')   #inifity
+```
 
 
 
