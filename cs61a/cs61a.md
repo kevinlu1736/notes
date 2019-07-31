@@ -1,6 +1,7 @@
 <a name="top"></a>
 ## Table of Contents
 <ul>
+	<li><a href="#virtual_env">Virtul Env</a></li>
     <li><a href="#useful_command">Useful Command</a></li>
     <li><a href="#expressions">Expressions</a></li>
     <li><a href="#functions">Functions</a>        
@@ -26,7 +27,30 @@
     <li><a href="#linked_lists">Linked List, Tree and Property Methods</a></li>
     <li><a href="#magic_methods">Magic Methods</a></li>
     <li><a href="#miscellaneous">miscellaneous</a></li>
+	 
+	 <li><a href="#scheme">Scheme</a></li>
 </ul>
+
+
+<a name="virtual_env"></a>
+## Virtual Environment
+```python
+#global
+pip install virtualenv
+pip list
+which python
+mkdir []
+cd 
+virtualenv project1_env
+virtualenv -p usr/bin/python2.6 py26_env #define python versino
+source project1_env/bin/activate #activate
+pip install ...
+pip freeze --local > requirements.txt #save local environment packages list
+pip install -r requirements.txt #install according to the txt file
+deactivate #back to global
+rm -rf #get rid of it
+
+```
 
 <a name="useful_command"></a>
 ## useful commands
@@ -1505,7 +1529,240 @@ replace(old, new, count=-1)->copy of str (-1 means all)
 float('inf')   #inifity
 ```
 
+<a href="#top">return to the top</a>
+<a name="scheme"></a>
+
+## Scheme
+
+### Expressions
+#### Call Expressions
+```scheme
+;operator in the parenthesis
+> (quotient 10 2)
+5
+
+> (quotient (+ 8 7) 5)
+3
+
+;change line anywhere
+> (+ (* 3
+		  (+ (* 2 4)
+		  	  (+ 3 5)))
+	  (+ (- 10 7)
+	      6))
+57
+
+//special cases
+scm> (+)
+0
+scm> (*)
+1
+scm> (* 2 2 2)
+8
+scm> +
+#[+]
+
+;number? is a name
+scm> (number? 3)
+#t
+scm> (number? +)
+#f
+scm> (zero? 2)
+#f
+scm> (zero? 0)
+#t
+scm> (integer? 2)
+#t
+```
+#### Special Forms
+- A combination that is not a call expression
+
+```scheme
+- If expression: (if <predicate> <consequent> <alternative>)
+- And and or: (and <e1> ... <en>), (or <e1> ... <en>)
+- Binding symbols: (define <symbol> <expression>)
+- New procedres: (define (<symbol> <formal 
+- parameters>) <doby>)
+
+> (define pi 3.14)
+> (* pi 2)
+6.28
+
+> (define (abs x)
+	 (if (< x 0)
+	 	  (- x)
+	 	  (x))
+
+>(abs -3)
+>3
+
+> (define (average x y) 
+ 	 (/ (+ x y) 2))
+> (average 3 7)
+5
+```
+
+#### Recursion
+
+```scheme
+scm> (define (sqrt x)
+		(define (update guess)
+			(if (= (square guess) x)
+				guess
+				(update (average guess (/ x guess)))))
+		(update 1))
+sqrt
+scm> (sqrt 256)
+16
 
 
+(define (mystery lst) 
+    (cond 
+        ((null? lst) #f) 
+        ((eq? (car lst) 61) #t) 
+        (else (mystery (cdr lst)))
+    )
+)
+```
 
+
+#### lambda Expressions
+
+```scheme
+lambda (<formal-parameters>) <body>
+;Same here
+(define (plus4 x) (+ x 4))
+(define plus4 (lambda (x) (+ x 4)))
+
+((lambda (x y z) (+ x y (squarez))) 1 2 3)
+```
+
+### Pairs and Lists
+
+#### Pairs
+```scheme
+> (cons 1 2)
+;car return the first in the pair
+;cdr return the second
+;nil the empty list
+```
+
+#### List
+```scheme
+> (cons 1 (cons 2 nill)) ;2 elements list
+(1 2)
+
+> (define a 1)
+> (define b 2)
+> (list a b)
+(1 2)
+
+> (list 'a 'b)
+(a b)
+
+> (car '(a b c))
+a
+> (cdr '(a b c))
+(b c)
+```
+
+### Dynamic Scope and Lexical scope
+```scheme
+> (define f (lambda (x) (+ x y)))
+
+> (define g (lambda (x y) (f (+ x x))))
+
+>(g 3 7)
+```
+
+- Lexical scope: The parent for f is the global (will cause error, no y)
+- Dynamic scope: The parent for f is g
+
+### Functional Programming
+- All functions are pure functions
+- No re-assignment and no mutable data types
+- Name-value bindings are permanent
+- Advantages
+	- The value of an expression is independent of the order in which sub-expressions are evaluated
+	- Sub-expressions can safely be evaluated in parallel or on demand (lazily)
+	- Referential transparency: The value of an expression does not change when we substitute one of its subexpression with the value of that subexpression.
+
+But... no for/while statements, how to iteration efficient? Tail Recursion
+
+### Tail Recursion
+A precedure call that has not yet returned is active. Some procedure calls are tail calls. A Scheme interpreter should support an unbounded number of active tail calls using only a constant amount of space.
+
+A tail call is a call expression in a tail context:
+
+- The last body sub-expression in a lambda expression
+- Sub-expressions 2 & 3 in a tail context if expression
+- All non-predicate sub-expressions in a tail context cond
+- The last sub-expression in a tail context and or or
+- The last sub-expression in a tail context begin
+
+
+<img src="images/16-tail-recursion1.png" style="max-width:70%" />
+<br/>
+
+
+- A call expression is not a tail call if more computation is still required in the calling procedure.
+- Linear recursive procudures can often be re-written to use tail calls.
+
+<img src="images/17-tail-recursion2.png" style="max-width:70%" />
+<br/>
+
+<img src="images/18-tail-recursion3.png" style="max-width:70%" />
+<br/>
+
+#### More Examples
+<img src="images/19-tail-recursion4.png" style="max-width:70%" />
+<br/>
+Not a tail recursion call
+
+### Map and Reduce
+#### Reduce
+```scheme
+(define (reduce procedure s start)
+	(if (null? s) start
+		(reduce procudure
+				(cdr s)
+				(procedure start (car s)))))
+;it depends on the procedure, if it's a constant space produce it's constant space
+
+> (reduce * `(3 4 5) 2)    ;2 * 3 * 4 *5
+120
+> (reduce (lambda (x y) (cons y x)) `(3 4 5) `(2))
+(5 4 3 2)
+```
+
+#### Map
+```scheme
+;Not a tail recursion version
+(define (map procedure s)
+	(if (null? s)
+		nil
+		(cons (procedure car s))
+				(map procedure (cdr s)))))
+
+exp:
+(map (lambda (x) (- 5 x)) (list 1 2))
+
+(define (map procedure s)
+	(define (map-reverse s m)
+		(if (null? s)
+			m
+			(map-reverse (cdr s)
+							(cons (procedure (car s))
+									m))))
+	(reverse (map-reverse s nill)))
+	
+(define (reverse s)
+	define (reverse-iter s r)
+		(if (null? s)
+			r
+			(reverse-iter (cdr s)
+							 ( cons (car s) r))))
+		(reverse_iter s nill))
+
+```
 
