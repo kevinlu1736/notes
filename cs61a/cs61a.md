@@ -8,8 +8,7 @@
         <ul>
             <li><a href="#environment_diagrams">Environment Diagrams</a></li>
             <li><a href="#funcs">Functions</a></li>
-        </ul>
-    </li>
+        </ul></li>
     <li><a href="#testing">Testing</a></li>
     <li><a href="#control">Control</a></li>
     <li><a href="#lambda">Lambda</a></li>
@@ -26,10 +25,14 @@
     <li><a href="#objects">Object Oriented Programming</a></li>
     <li><a href="#linked_lists">Linked List, Tree and Property Methods</a></li>
     <li><a href="#magic_methods">Magic Methods</a></li>
+    <li><a href="#error_handling">Error Handling</a></li> 
     <li><a href="#miscellaneous">miscellaneous</a></li>
-	 
 	 <li><a href="#scheme">Scheme</a></li>
+	 <li><a href="#streams">Streams</a></li>
+	 <li><a href="#interpreter">Interpreter</a></li>
+	 <li><a href="#sql">SQL(Declarative Language)</a></li>
 </ul>
+	 
 
 
 <a name="virtual_env"></a>
@@ -1372,9 +1375,16 @@ False
 Link(1, Link(2, Link(3, Link(1, Link(3)))))
 ```
 
+<a href="#top">return to the top</a>
 
-
-
+<a name="error_handling"></a>
+## Error Handling
+```python
+try:
+	1 + 'hello'
+except NameError as e:
+	print('Error message:', e)
+```
 
 <a href="#top">return to the top</a>
 
@@ -1537,12 +1547,25 @@ float('inf')   #inifity
 ### Expressions
 #### Call Expressions
 ```scheme
+
+> quotient
+#[quotient]
+> 'quotient
+quotient
+> /
+#[/]
+
 ;operator in the parenthesis
 > (quotient 10 2)
 5
 
 > (quotient (+ 8 7) 5)
 3
+
+> (quotient 1 2)
+0
+> (/ 1 2)
+0.5
 
 ;change line anywhere
 > (+ (* 3
@@ -1573,6 +1596,30 @@ scm> (zero? 0)
 #t
 scm> (integer? 2)
 #t
+
+> (modulo 35 4)
+3
+
+> (even? 2)
+#t
+> (odd? 2)
+#f
+
+> (not (= 1 2))
+#t
+
+> (eq? 1 2)
+#f
+> (= `a `b)
+Error
+> (eq? `a `b)
+#f
+> (equal? `a `a)
+#t
+
+> (pair? (cons 2 nil))
+#t
+
 ```
 #### Special Forms
 - A combination that is not a call expression
@@ -1591,7 +1638,7 @@ scm> (integer? 2)
 > (define (abs x)
 	 (if (< x 0)
 	 	  (- x)
-	 	  (x))
+	 	  (x)))
 
 >(abs -3)
 >3
@@ -1600,6 +1647,11 @@ scm> (integer? 2)
  	 (/ (+ x y) 2))
 > (average 3 7)
 5
+
+> (let ((a 1)) a)
+1
+> (let ((a 1)(b a)) b)
+Error
 ```
 
 #### Recursion
@@ -1623,8 +1675,12 @@ scm> (sqrt 256)
         (else (mystery (cdr lst)))
     )
 )
-```
 
+> (let (v 1) (b 2) (v+b)) 
+3
+
+```
+<div style="color:red;">(cdr `(10 21))</div>
 
 #### lambda Expressions
 
@@ -1649,6 +1705,7 @@ lambda (<formal-parameters>) <body>
 
 #### List
 ```scheme
+;The last element must be nill 
 > (cons 1 (cons 2 nill)) ;2 elements list
 (1 2)
 
@@ -1664,7 +1721,50 @@ lambda (<formal-parameters>) <body>
 a
 > (cdr '(a b c))
 (b c)
+
+> (length `(1 2 3 4 5))
+5
+
+> (append `(1 2 3) `(4 5 6))
+(1 2 3 4 5 6)
+
+> (cdr (cons 1 (cons 2 nil)))
+(2)
+> (car (cons 1 (cons 2 nil)))
+1
+
+> (cons 1 `(list 2 3))
+(1 list 2 3)
+
+> (define l (cons 4 (cons 3 (cons 2 nil))))
+> (append l '(1 0))
+(4 3 2 1 0)
+
+;Tricky part
+> (define a `(1))
+> (define b (cons 2 a))
+> b
+(2 1)
+> (define c (list 3 b))
+(3 (2 1))
+> (cdr c)
+((2 1))
+
 ```
+<img src="images/20-complicated-list.png" style="max-width: 85%" /><br/>
+- The first is val, the second is pointer
+- next node is at the same level
+- If the first is a pointer, there'll be a sub list
+
+```scheme
+> (cons (cons 1 nil) (cons 2 (cons (cons 3 (cons 4 nil)) (cons 5 nil))))
+((1) 2 (3 4) 5)
+
+> (list (cons 1 nil) (cons 2 (cons (cons 3 (cons 4 nil)) (cons 5 nil))))
+((1 ()) 2 (3 4) 5)
+```
+
+<div style="color:red">Note: null? is a symbol to verify if the thing behind it is nil or not. There's no 'null'. 'nil' is just () empty list</div>
 
 ### Dynamic Scope and Lexical scope
 ```scheme
@@ -1757,12 +1857,501 @@ exp:
 	(reverse (map-reverse s nill)))
 	
 (define (reverse s)
-	define (reverse-iter s r)
+	(define (reverse-iter s r)
 		(if (null? s)
 			r
 			(reverse-iter (cdr s)
 							 ( cons (car s) r))))
 		(reverse_iter s nill))
 
+```
+
+#### Filter
+```scheme
+(define (unique s)
+  (if (null? s)
+      nil
+      (cons (car s)
+            (unique (filter (lambda (x) (not (eq? x (car s))))
+                            (cdr s)
+                    )
+            )
+      )
+  )
+)
+```
+
+#### append
+
+```scheme
+scm> (append '(1 2 3) '(4 5 6))
+(1 2 3 4 5 6)
+scm> (append)
+()
+scm> (append '(1 2 3) '(a b c) '(foo bar baz))
+(1 2 3 a b c foo bar baz)
+scm> (append '(1 2 3) 4)
+Error
+```
+
+### Macro
+```scheme
+Primitive: 2 3 true + quotient
+Combinations: (quotient 10 2) (not true)
+
+> (list 'quotient 10 2)
+(quotient 10 2)
+
+> (eval (list 'quotient 10 2))
+5
+
+> (list + 1 2)
+(#[+] 1 2)
+
+> (list '+ 1 2)
+(+ 1 2)
+
+> (list '+ (+ 2 3))
+(+ 5)
+
+> (define (fact-exp n)
+	 (if (= n 0) 1 (list '* n (fact-exp(- n 1)))))
+> (fact-exp 5)
+(* 5 (* 4 (* 3 (* 2(* 1 1)))))
+
+> (eval (fact-exp 5))
+120
+
+> (define (fib-exp x)
+	 (if (<= n 1) n (list '+ (fib-exp (- n 2)) (fib-exp (- n 1)))))
+
+> (fib-exp 4)
+(+ (+ 1 (+ 0 1)) (+ (+ 0 1) (+ 1 (+ 0 1))))
+```
+
+- A macro is an operation performed on the source code of a program before evaluation
+
+- Evaluate the operator, if it evaluates to a macro
+ call the macro on the source code
+- Then evaluate the expression returned from the macro procedure
+
+```scheme
+> (define-macro (twice expr)
+	(list 'begin expr expr))
+
+> (print 2)
+2
+
+> (begin (print 2) (print 2))
+2
+2
+
+> (define (twice expr) (list 'begin expr expr))
+> (twice (print 2))
+(begin None None)
+> (twice '(print 2)) ;' stop it from evaluating
+(begin (print 2) (print 2))
+> (eval (twice '(print 2)))
+2
+2
+> (defin-macro (twice expr) (list 'begin expr expr))
+> (twice (print 2))
+2
+2
+
+> (define (check val) (if val 'passed 'failed))
+> (define-macro (check expr)(list 'if expr ''passed ''failed)
+> (define x -2)
+x
+> (check (> x 0))
+failed
+
+
+> (define-macro (check expr)(list 'if expr ''passed
+ 	(list 'quote (list 'failed: expr))))
+> (check (> x -2))
+(failed: (> x -2))
+
+None is true	
+;for macro
+> (define (map fn vals)
+	(if (null? vals)
+		()
+		(cons (fn (car vals))
+				(map fn (cdr vals)))))
+ 
+> (define-macro (for sym vals expr)
+	(list 'map (list 'lambda (list sym) expr) vals)
+> (for x '(2 3 4 5) (* x x))
+(4 9 16 25)
+
+
+```
+###Quasi-Quotation
+- parts of it can be evaluate
+
+```scheme
+> (define b 2)
+> '(a b c)
+(a b c)
+> `(a b c)
+(a b c)
+
+> `(a ,b c) ;if b can't be evaluate, there'll be an error
+(a 2 c)
+
+> '(a ,b c)
+(a (unquote b) c)
+
+> (define expr '(* x x))
+> `(lambda (x) ,expr)
+(lambda (x) (* x x))
+```
+- symplify
+```scheme
+(define-macro (check expr)
+	`(if ,expr 'passed '(failed: ,expr)))
+```
+
+```scheme
+;for loop
+(define (cddr s) (cdr (cdr s)))
+(define-macro
+ (list-of map-expr for var in lst (variadic y))
+ (list 'map
+       (list 'lambda (list var) map-expr)
+       (if (null? y)
+           lst
+           `(filter (lambda (,var) ,(cadr y)) ,lst)
+       )
+ )
+)
+
+; ; List all ways to make change for TOTAL with DENOMS
+(define (list-change total denoms)
+  (define (l-change total denoms path)
+    (cond 
+      ((null? denoms)
+       nil
+      )
+      ((< total (car denoms))
+       (l-change total (cdr denoms) path)
+      )
+      ((> total (car denoms))
+       (append (l-change (- total (car denoms))
+                         denoms
+                         (append path (list (car denoms)))
+               )
+               (l-change total (cdr denoms) path)
+       )
+      )
+      ((= total (car denoms))
+       (append (list (append path (list (car denoms))))
+               (l-change total (cdr denoms) path)
+       )
+      )
+    )
+  )
+  (l-change total denoms nil)
+)
+```
+
+<a href="#top">Back to Top</a>
+
+<a name="interpreter"></a>
+##Interpreter
+
+<img src="images/21-interpreter-structure.png" style="max-width: 90%" /> <br/>
+
+### Special Forms
+- Symbols are bound to values in the current environment
+- else-evaluating expressions are returned.
+- All other legal expressions are represented as Scheme lists, called combinations
+
+```scheme
+;high order function
+(define (outer x y)
+	(define (inner z x)
+		(+ x (* y 2) (* z 3)))
+	inner)
+	
+> (outer 1 2)
+inner
+
+> ((outer 1 2) 1 10)
+17
+```
+
+#### Logical Special Forms
+- May evaluate only part of it
+- The interpreter convert ' to (quote ~)
+
+```scheme
+> (if #t 1 (/ 1 0)) ;No error at all
+
+> (and 0 1 nil #f 2)
+;evaluated 0 1 nil #f, 0 and nill are all true
+
+> (quote (+ 1 2)) ;or '(+ 1 2)
+(+ 1 2)
+
+> `(1 2)
+(1 2)
+```
+
+#### Lambda Expressions
+- Use a class
+
+#### Frames and Environments
+- Frames have parents(env)
+- Frames are Python instances with methods lookup and define
+- Lookup is a function recursively lookup from child to parent
+
+#### Define Expressions
+- binds a symbol to a value in the first frame of the current environment
+- Procedure definition is shorthand of define with a lambda expression.
+- 
+```scheme
+(define (<name> <formal parameters>) <body>)
+(define <name> (lambda (<formal parameters>) <body>))
+```
+
+#### Applying User-Defined Procedures
+- To apply a user-defined procedure, create a new frame in which formal parameters are bound to argument values, whosw parent is the env of the procedure.
+- Evaluate the body of the procedure in the environment that starts with this new frames.
+
+```scheme
+> (lambda (x)(+ x 6))
+(lambda (x)(+ x 6))
+```
+
+<a href="#top">return to the top</a>
+
+<a name="streams"></a>
+
+### Streams
+
+```python
+def sum_primes(a, b):
+	return sum(filter(is_prime, range(a, b)))
+	
+def is_prime(x):
+	if x <= 1:
+		return False
+	return all(map(lambda y: x % y, range(2, x)))
+```
+- Space $\theta(1)$ (benifit by generator)
+
+```scheme
+(define (range a b)
+	(if (>= a b) nil (cons a (range (+ a 1) b))))
+
+(define (filter f s)
+	(if (null? s)
+		nil
+		(if (f (car s))
+			(cons (car s)
+				(filter f (cdr s)))
+			(filter f (cdr s)))))
+
+(define (reduce f s start)
+	(if (null? s)
+		start
+		(reduce f
+				 (cdr s)
+				 (f start (car s)))))
+
+(define (sum s)
+	(reduce + s 0))
+
+(define (prime? x)
+	(if (<= x 1)
+		false
+		(null? (filter (lambda (y) (= 0 (remainder x y))) (range 2 x)))))
+		
+(define (sum-primes a b)
+	(sum (filter prime? (range a b))))
+```
+- Space $\theta (n)$
+
+**Solution**
+
+```scheme
+;only evaluate 2 when cdr-stream is called
+(cdr-stream (cons-stream 1 2)) -> 2 
+
+(cons-stream 1 (cons-stream 2 nil)
+
+(cons-stream 1 (/ 1 0)) -> (1 . #[delayed]) ; No error
+(cdr-stream (cons-stream 1 (/ 1 0)) ;error
+```
+
+#### Build Stream
+
+```scheme
+(define (range-stream a b)
+	(if (>= a b) nil (cons-stream a (range-stream (+ a 1) b))))
+
+;Infinite stream
+(define (int-stream start)
+	(cons-stream start (int-stream (+ 1 start))))
+	
+(define (square-stream s)
+	(cons-stream (* (car s)(car s))
+					(square-stream (cdr-stream s))))
+
+(define ones (cons-stream 1 ones))
+
+(define (add-streams s t)
+	(cons-stream (+ (car s) (car t))
+					(add-streams (cdr-stream s)
+									(cdr-stream t))))
+
+;1 2 3 4 5....							
+(define ints (cons-stream 1 (add-streams ones ints)))
+
+;map filter reduce stream
+(define (map-stream f s)
+	(if (null? s)
+		 nil
+		 (cons-stream (f (car s))
+		 				 (map-stream f
+		 				 	(cdr-stream s)))))
+
+(define (reduce-stream f s start)
+	(if (null? s)
+		start
+		(reduce-stream f
+				 (cdr-stream s)
+				 (f start (car s)))))
+
+(define (filter-stream f s)
+	(if (null? s)
+		nil
+		(if (f (car s))
+			(cons-stream (car s)
+				(filter-stream f (cdr-stream s)))
+			(filter-stream f (cdr-stream s)))))
+			
+;stream of primes
+;filter all the multiple of 1 , 2, 3 until n
+(define (sieve s)
+	(cons-stream (car s)
+					(sieve (filter-stream
+						(lambda (x) (not (= 0 (remainder x (car s)))))
+						(cdr-stream s))))
+
+define primes (sieve (int-stream 2)))
+```
+
+#### Promise
+- A promis is an expressions, along with an environment in which to evaluate it
+- lexical scope
+- Delaying an expression creates a promis to evaluate it later in the current environment
+
+
+```scheme
+scm> (define promise (let ((x 2)) (delay (+ x 1))))
+scm> (define x 5)
+scm> (force promise)
+3
+```
+
+- Every time writing delay, it just like create a lambda with no arguments
+
+```scheme
+(define-macro (delay expr) `(lambda () ,expr))
+(define (force promise) (promise))
+
+(define-macro (cons-stream a b) `(cons ,a (delay, b)))
+(define (cdr-stream s) (force (cdr s))) //evaluate the lambda
+
+scm> (define ones (cons-stream 1 ones))
+(1 . #[promise (not forced)]) 
+; not forced means hasn't been evaluated, if it has been evaluated, it will store the value and use it next time
+```
+
+**Exp WWSD**
+
+```scheme
+scm> (define oski 61)
+oski
+scm> (define go-bears (cons-stream oski (cons-stream oski nil)))
+go-bears
+scm> (define oski 1866)
+oski
+scm> (car (cdr-stream go-bears))
+(1866)
+```
+<a href="#top">return to the top</a>
+
+<a name="sql"></a>
+## Declarative Language
+- A "program" is a description of the desired result
+- The interpreter figures out how to generate the result
+- python is a imperative language
+	- A "program" is a description of computational processes
+	- The interpreter carries out execution/evaluation rules
+
+
+
+### SQL
+
+```bash
+sqlite3 -init ex.sql
+sqlite> 
+```
+
+#### SELECT
+
+- select statement is used to create table
+
+```sql
+//create new permanent table
+create table cities as  
+	select 38 as latitude, 122 as longitude, "berkeley" as name union 
+	select 42, 71, "Cambridge";
+
+
+select "west coast" as region, name from cities where longitude >= 115 union
+select "other", name from cities where longitude < 115;
+```
+- arithmatic
+
+```sql
+select chair, single + 2 * couple as total from lift;
+select word, one+two+four+eight as value from ints where one + two/2 + four/4 + eight/8 = 1;
+
+```
+
+#### Joining Two Tables
+
+```sql
+//join table using child = name 
+select parent from parents, dogs where child = name and fur = "curly";
+```
+
+#### Aliases and Dot Expressions
+
+```sql
+select a.child as first, b.child as second 
+	from parents as a, parents as b
+	where a.parent = b. parent and a.child < b.child
+```
+
+#### Numerical and String Expressions
+```sql
+//<> != are the same
+sqlite> select "hello," || " world";
+hello, world
+
+//substr, instr(position) not very good low efficiency
+sqlite> select substr(s, 4, 2) || substr(s, instr(s, " ")+1, 1) from phrase;
+low
+
+//not good
+sqlite> create table lists as select "one" as car, "two, three, four" as cdr;
+sqlite> select substr(cdr, 1, instr(cdr, ",")-1) as cadr from lists;
+two
 ```
 
