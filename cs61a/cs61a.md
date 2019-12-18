@@ -1932,7 +1932,7 @@ Combinations: (quotient 10 2) (not true)
 - A macro is an operation performed on the source code of a program before evaluation
 
 - Evaluate the operator, if it evaluates to a macro
- call the macro on the source code
+ call the macro on the source code (eval the source code and replace the user input as string into the source code unless there's a comma)
 - Then evaluate the expression returned from the macro procedure
 
 ```scheme
@@ -2006,6 +2006,27 @@ None is true
 > (define expr '(* x x))
 > `(lambda (x) ,expr)
 (lambda (x) (* x x))
+
+scm> (define-macro (f x) (car x))
+scm> (f (+ 2 3))
+#[+]
+
+scm> (f (quote (1 2))
+Error
+;anything will be evaluate to a val finally and quote can't be evaluate to a val alone
+scm> quote
+Error
+
+scm> +
+#[+]
+
+scm> (define quote 7000)
+scm> (f (quote (1 2))
+7000
+
+scm> '(1 ,x 3)
+(1 (unquote x) 3)
+
 ```
 - symplify
 ```scheme
@@ -2062,6 +2083,7 @@ None is true
 ##Interpreter
 
 <img src="images/21-interpreter-structure.png" style="max-width: 90%" /> <br/>
+
 
 ### Special Forms
 - Symbols are bound to values in the current environment
@@ -2190,7 +2212,7 @@ def is_prime(x):
 
 ```scheme
 (define (range-stream a b)
-	(if (>= a b) nil (cons-stream a (range-stream (+ a 1) b))))
+	(if (>= a b) nil (cons-stream a (range-stream (+ a 1) b))))kjlk
 
 ;Infinite stream
 (define (int-stream start)
@@ -2355,3 +2377,78 @@ sqlite> select substr(cdr, 1, instr(cdr, ",")-1) as cadr from lists;
 two
 ```
 
+#### Aggregate Functions
+<img src="images/sql-1.png" style="max-width:90%" /><br/>
+
+```sql
+/*max min ... will only display the max/min row*/
+select max(legs) from animals; 
+
+--support operator
+select max(legs-weight) + 5 from animals;
+
+select min(legs), max(weight) from animals where name <> "t-rex"
+3/6
+
+--count(*) count number of rows, the following have the same results
+select count(legs) from animals;
+select count(kind) from animals;
+select count(*) from animals;
+
+--1 for each type, 2types
+select count(distinct legs) from animals;
+2
+
+select count(distinct weight) from animals;
+4
+
+select sum(distinct weight) from animals; 
+12036 --ignore the 2 redundent "10"
+
+```
+
+- An aggregate function also selects a row in the table, which may be meaningful
+
+```sql
+select max(weight), kind from animals; -- we get only 1 row
+12000|t-rex
+
+select avg(weight), kind from animals;
+2009.33333333333|t-rex --t-rex is not meaningful
+
+select max(legs), kind from animals;
+4|cat --There're 3 maxs 'cat' is not meaningful
+
+select kind from animals where weight > 10 and weight = min(weight)
+```
+
+- group by 
+	- partition the rows in the table by group
+
+```sql
+select legs, max(weight) from animals group by legs;
+
+legs max(weight)
+4		20
+2		12000
+
+-- group by the cartisian product of legs and weight
+select legs, weight from animals group by legs, weight;
+2|6
+2|10
+2|12000
+2|10
+2|20
+
+select max(kind), weight/legs from animals group by weight/legs
+ferret|2 --10/4 default is 2, use "weight/legs/1.0" to get float
+parrot|3
+penguin|5
+t-rex|6000
+
+select weight/legs, count(*) from animals gropu by weight/legs having count(*)>1;
+5 2
+2 2
+-- having clause filter the groups to leave the ones we want
+
+```
