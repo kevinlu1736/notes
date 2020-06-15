@@ -27,12 +27,16 @@
     <li><a href="#magic_methods">Magic Methods</a></li>
     <li><a href="#error_handling">Error Handling</a></li> 
     <li><a href="#miscellaneous">miscellaneous</a></li>
+    <li><a href="#optional_args">Optional Arguments</a></li>
+    <li><a href="#matplotlib">Matplotlib</a></li>
+    
 	 <li><a href="#scheme">Scheme</a></li>
 	 <li><a href="#streams">Streams</a></li>
 	 <li><a href="#interpreter">Interpreter</a></li>
 	 <li><a href="#sql">SQL(Declarative Language)</a></li>
+
 </ul>
-	 
+
 
 
 <a name="virtual_env"></a>
@@ -1540,6 +1544,57 @@ float('inf')   #inifity
 ```
 
 <a href="#top">return to the top</a>
+
+<a name="optional_args"></a>
+
+### Optional Arguments
+```python
+def test(*args, **kwargs):
+	# kwargs is a dictionary, args is a list
+	for val in args:
+		print(val)
+	for key, val in kwargs:
+		print(key, ":", val)
+
+test(1, 2, 3, size=10, length=20)
+1
+2
+3
+size: 10
+length: 20
+```
+
+<a name="matplotlib"></a>
+## Matplotlib
+
+### Basic plot
+
+```python
+import matplotlib.pyplot as plt
+plt.ion()
+plt.plot([], [], color="b")
+#It's not neccessary but the plot will somehow show up
+plt.pause(0.001) 
+
+plt.show(block=True)
+```
+
+### Multiple figures
+```python
+plt.figure(1)
+plt.subplot(223) #2*2, 3rd position
+plt.plot([], [], color="b")
+fig = plt.figure(2)
+plt.subplot(233)
+plt.plot([], [], color='b')
+
+fig.add_subplot(1,1,1)
+plt.plot([], [], color='b')
+plt.show()
+
+
+```
+
 <a name="scheme"></a>
 
 ## Scheme
@@ -2452,3 +2507,4 @@ select weight/legs, count(*) from animals gropu by weight/legs having count(*)>1
 -- having clause filter the groups to leave the ones we want
 
 ```
+
